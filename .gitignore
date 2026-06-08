@@ -71,3 +71,13 @@ logs/
 airflow.db
 airflow.cfg
 airflow-webserver.pid
+
+# Temporary sprint artifacts — kept locally, not in repo
+day-*-README.md
+final-verification-audit-Day7-FINAL.md
+ph_geospatial_explainer_llm.md
+reddit_posts.md
+screen_recording_guide.md
+merge_report.md
+GITHUB-RELEASE-v2.2.0.md
+
