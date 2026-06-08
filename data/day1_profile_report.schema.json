@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "ph-geospatial/day1_profile_report.schema.json",
+  "title": "Day1ProfileReport",
+  "description": "Output of ADR-006 mandatory .dbf inspection phase. Written by inspector.run_inspection().",
+  "type": "object",
+  "required": [
+    "inspection_run_id",
+    "inspected_at",
+    "analytical_dataset_count",
+    "halt_condition",
+    "datasets"
+  ],
+  "properties": {
+    "inspection_run_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "UUID for this inspection run. Recorded in geo_ingest_registry.run_id."
+    },
+    "inspected_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC timestamp of inspection run."
+    },
+    "analytical_dataset_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Count of datasets with operation_mode='analytical'. 0 triggers halt_condition=true."
+    },
+    "halt_condition": {
+      "type": "boolean",
+      "description": "True when analytical_dataset_count=0. Caller MUST NOT proceed to Bronze pipeline."
+    },
+    "halt_reason": {
+      "type": ["string", "null"],
+      "description": "Human-readable halt explanation. Non-null only when halt_condition=true."
+    },
+    "datasets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/DatasetProfile"
+      },
+      "description": "One entry per inspected .shp file."
+    }
+  },
+  "$defs": {
+    "DatasetProfile": {
+      "type": "object",
+      "required": [
+        "dataset_name",
+        "archive_path",
+        "archive_sha256",
+        "shp_path",
+        "feature_count",
+        "geometry_type",
+        "operation_mode"
+      ],
+      "properties": {
+        "dataset_name": {
+          "type": "string",
+          "description": "Logical dataset name (e.g. 'psa_provincial_2023')."
+        },
+        "archive_path": {
+          "type": "string",
+          "description": "Filesystem path to the .7z archive."
+        },
+        "archive_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "SHA-256 of the .7z archive. Primary dedup key in geo_ingest_registry."
+        },
+        "shp_path": {
+          "type": "string",
+          "description": "Filesystem path to the extracted .shp file."
+        },
+        "feature_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "geometry_type": {
+          "type": "string",
+          "examples": ["Polygon", "MultiPolygon", "Point", "MultiPoint", "LineString"]
+        },
+        "crs_epsg": {
+          "type": ["integer", "null"],
+          "description": "EPSG code of source CRS. Null if CRS is absent or non-EPSG."
+        },
+        "crs_wkt": {
+          "type": ["string", "null"],
+          "description": "WKT string of source CRS for full audit trail."
+        },
+        "numeric_columns": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "fiona type 'int' or 'float' columns, excluding shape metadata noise."
+        },
+        "categorical_columns": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "fiona type 'str' columns, excluding objectid/shape_area noise."
+        },
+        "code_columns": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Subset of categorical_columns that match PSGC regex patterns."
+        },
+        "operation_mode": {
+          "type": "string",
+          "enum": ["analytical", "geometry_only", "boundary_catalog"],
+          "description": "analytical: numeric cols found → H3+Jenks+Kimball. geometry_only: no numeric/codes. boundary_catalog: PSGC codes only → dim_region load."
+        },
+        "recommended_indicator": {
+          "type": ["string", "null"],
+          "description": "Highest-cardinality non-binary numeric column. Passed to gold/h3_aggregate.py as value_column. Null for non-analytical modes."
+        },
+        "sample_values": {
+          "type": "object",
+          "description": "Up to 5 sample values per key column for human QA. Keys are column names.",
+          "additionalProperties": {
+            "type": "array",
+            "items": {}
+          }
+        },
+        "fiona_schema": {
+          "type": "object",
+          "description": "Raw fiona schema properties dict for full audit trail.",
+          "additionalProperties": { "type": "string" }
+        },
+        "inspection_error": {
+          "type": ["string", "null"],
+          "description": "Non-null only if profile_shapefile() raised an exception. Dataset counts as geometry_only."
+        }
+      }
+    }
+  }
+}

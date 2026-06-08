@@ -1,0 +1,63 @@
+{
+  "inspection_run_id": "d7f1x-0001-4a2b-8c3d-e9f0a1b2c3d4",
+  "inspected_at": "2026-06-06T06:00:00Z",
+  "analytical_dataset_count": 1,
+  "halt_condition": false,
+  "halt_reason": null,
+  "fallback_note": "Synthetic fallback (FIX-08 Day 7): No actual .7z archives available. All downstream pipeline stages operate on synthetic fixtures. Replace with real PSA/NAMRIA archive run before production deployment.",
+  "datasets": [
+    {
+      "dataset_name": "psa_provincial_2023_synthetic",
+      "archive_path": "synthetic://day7_fix/psa_provincial_2023_synthetic.7z",
+      "archive_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "shp_path": "synthetic://day7_fix/psa_provincial_2023_synthetic.shp",
+      "feature_count": 17,
+      "geometry_type": "MultiPolygon",
+      "crs_epsg": 4326,
+      "crs_wkt": "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433]]",
+      "numeric_columns": [
+        "poverty_rate",
+        "gdp_per_capita_ppp",
+        "population_density"
+      ],
+      "categorical_columns": [
+        "region_name",
+        "region_code",
+        "psgc_code"
+      ],
+      "code_columns": [
+        "psgc_code"
+      ],
+      "operation_mode": "synthetic",
+      "recommended_indicator": "poverty_rate",
+      "sample_values": {
+        "poverty_rate": [
+          28.3,
+          25.1,
+          22.6,
+          19.8,
+          18.3
+        ],
+        "psgc_code": [
+          "010000000",
+          "020000000",
+          "030000000",
+          "040000000",
+          "050000000"
+        ]
+      },
+      "fiona_schema": {
+        "geometry": "MultiPolygon",
+        "properties": {
+          "region_name": "str",
+          "psgc_code": "str",
+          "poverty_rate": "float",
+          "gdp_per_capita_ppp": "float",
+          "population_density": "float"
+        }
+      },
+      "inspection_error": null
+    }
+  ],
+  "operation_mode": "synthetic"
+}

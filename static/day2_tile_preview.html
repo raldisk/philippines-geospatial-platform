@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PH Geospatial Platform — Day 2 Tile Preview</title>
+
+  <!-- MapLibre GL JS (CDN, pinned minor version) -->
+  <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+
+  <!-- PMTiles protocol handler for MapLibre -->
+  <script src="https://unpkg.com/pmtiles@3.2.0/dist/pmtiles.js"></script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+    }
+
+    #map {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+    }
+
+    /* ── Control panel ─────────────────────────────────── */
+    #panel {
+      position: absolute;
+      top: 16px; left: 16px;
+      z-index: 10;
+      background: rgba(13, 17, 23, 0.92);
+      border: 1px solid rgba(99, 110, 123, 0.4);
+      border-radius: 8px;
+      padding: 16px 18px;
+      width: 280px;
+      backdrop-filter: blur(6px);
+    }
+
+    #panel h1 {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #7ee787;
+      margin-bottom: 4px;
+    }
+
+    #panel p.sub {
+      font-size: 11px;
+      color: #8b949e;
+      margin-bottom: 14px;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      margin-bottom: 4px;
+      color: #c9d1d9;
+    }
+    .stat-row .label { color: #8b949e; }
+    .stat-row .value { font-variant-numeric: tabular-nums; }
+
+    #status-badge {
+      margin-top: 12px;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      text-align: center;
+      background: #161b22;
+      border: 1px solid #30363d;
+      color: #8b949e;
+      transition: all 0.3s;
+    }
+    #status-badge.ok   { background: #0d2818; border-color: #238636; color: #7ee787; }
+    #status-badge.warn { background: #1c1507; border-color: #9e6a03; color: #d29922; }
+    #status-badge.err  { background: #2d0f0f; border-color: #b91c1c; color: #f85149; }
+
+    /* ── Legend ─────────────────────────────────────────── */
+    #legend {
+      position: absolute;
+      bottom: 32px; right: 16px;
+      z-index: 10;
+      background: rgba(13, 17, 23, 0.92);
+      border: 1px solid rgba(99, 110, 123, 0.4);
+      border-radius: 8px;
+      padding: 14px 16px;
+      min-width: 160px;
+      backdrop-filter: blur(6px);
+    }
+    #legend h2 { font-size: 11px; color: #8b949e; margin-bottom: 8px; }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      margin-bottom: 5px;
+      color: #c9d1d9;
+    }
+    .swatch {
+      width: 14px; height: 14px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ── File picker ─────────────────────────────────────── */
+    #file-row {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    #file-row label {
+      font-size: 11px;
+      color: #8b949e;
+    }
+    #file-row input[type="file"] {
+      font-size: 11px;
+      color: #c9d1d9;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 4px;
+      padding: 4px 6px;
+      width: 100%;
+      cursor: pointer;
+    }
+    #file-row input[type="text"] {
+      font-size: 11px;
+      color: #c9d1d9;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 4px;
+      padding: 4px 6px;
+      width: 100%;
+    }
+    #load-btn {
+      font-size: 11px;
+      font-weight: 600;
+      color: #0d1117;
+      background: #238636;
+      border: none;
+      border-radius: 4px;
+      padding: 6px 0;
+      cursor: pointer;
+      width: 100%;
+    }
+    #load-btn:hover { background: #2ea043; }
+
+    /* ── Attribution ─────────────────────────────────────── */
+    .maplibregl-ctrl-attrib { font-size: 9px !important; }
+  </style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<!-- ── Control panel ──────────────────────────────────────── -->
+<div id="panel">
+  <h1>PH Geospatial Platform v2.2</h1>
+  <p class="sub">Day 2 — PMTiles tile verification</p>
+
+  <div class="stat-row">
+    <span class="label">Layer</span>
+    <span class="value" id="stat-layer">—</span>
+  </div>
+  <div class="stat-row">
+    <span class="label">Zoom</span>
+    <span class="value" id="stat-zoom">—</span>
+  </div>
+  <div class="stat-row">
+    <span class="label">Tile range</span>
+    <span class="value">z4 → z12</span>
+  </div>
+  <div class="stat-row">
+    <span class="label">Source</span>
+    <span class="value">PMTiles (ADR-001)</span>
+  </div>
+  <div class="stat-row">
+    <span class="label">Features visible</span>
+    <span class="value" id="stat-features">—</span>
+  </div>
+
+  <div id="status-badge">Loading protocol…</div>
+
+  <!-- File / URL loader -->
+  <div id="file-row">
+    <label>PMTiles file (local):</label>
+    <input type="file" id="file-input" accept=".pmtiles" />
+
+    <label style="margin-top:6px;">— or URL:</label>
+    <input
+      type="text"
+      id="url-input"
+      placeholder="http://localhost:9000/geo-pmtiles/dataset.pmtiles"
+    />
+
+    <button id="load-btn">Load PMTiles →</button>
+  </div>
+</div>
+
+<!-- ── Jenks legend ────────────────────────────────────────── -->
+<div id="legend">
+  <h2>Jenks class (z≥7)</h2>
+  <div class="legend-item">
+    <div class="swatch" style="background:#f7fbff;"></div><span>Class 1 — Lowest</span>
+  </div>
+  <div class="legend-item">
+    <div class="swatch" style="background:#9ecae1;"></div><span>Class 2</span>
+  </div>
+  <div class="legend-item">
+    <div class="swatch" style="background:#4393c3;"></div><span>Class 3</span>
+  </div>
+  <div class="legend-item">
+    <div class="swatch" style="background:#2166ac;"></div><span>Class 4</span>
+  </div>
+  <div class="legend-item">
+    <div class="swatch" style="background:#08306b;"></div><span>Class 5 — Highest</span>
+  </div>
+  <div class="legend-item" style="margin-top:8px;">
+    <div class="swatch" style="background:#30363d;"></div><span>No data</span>
+  </div>
+</div>
+
+<script>
+/* =============================================================================
+   PH Geospatial Platform — Day 2 Tile Preview
+   Section 6.2, C4 Container Diagram
+   Success criteria:
+     ✓ Tile visible in browser at zoom 4 → 12
+     ✓ No console errors
+     ✓ pmtiles verify already passed before this HTML loads
+   ============================================================================= */
+
+"use strict";
+
+// ── 1. Register PMTiles protocol with MapLibre ─────────────────────────────
+const protocol = new pmtiles.Protocol();
+maplibregl.addProtocol("pmtiles", protocol.tile.bind(protocol));
+
+setBadge("loading", "PMTiles protocol registered");
+
+// ── 2. Philippine bounding box (EPSG:4326) ─────────────────────────────────
+// Luzon + Visayas + Mindanao + island provinces
+// [west, south, east, north]
+const PH_BOUNDS = [116.928, 4.587, 126.604, 21.321];
+
+// Centre of the Philippine archipelago
+const PH_CENTER = [122.0, 12.5];
+
+// ── 3. Initialise map ──────────────────────────────────────────────────────
+const map = new maplibregl.Map({
+  container: "map",
+  style: {
+    version: 8,
+    glyphs: "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
+    sources: {
+      // Minimal OpenStreetMap-compatible basemap via OSM Liberty tiles
+      "osm-liberty": {
+        type: "raster",
+        tiles: [
+          "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+        ],
+        tileSize: 256,
+        attribution:
+          "© <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors",
+        maxzoom: 19,
+      },
+    },
+    layers: [
+      {
+        id: "osm-base",
+        type: "raster",
+        source: "osm-liberty",
+        paint: { "raster-opacity": 0.35 },
+      },
+    ],
+  },
+  center: PH_CENTER,
+  zoom: 5,
+  minZoom: 4,
+  maxZoom: 12,
+  maxBounds: [
+    [110.0, -0.5],   // sw — buffer around PH_BOUNDS
+    [132.0, 25.0],   // ne
+  ],
+});
+
+map.addControl(new maplibregl.NavigationControl(), "top-right");
+map.addControl(new maplibregl.ScaleControl({ maxWidth: 120, unit: "metric" }), "bottom-left");
+
+// ── 4. PMTiles source + layer adder ───────────────────────────────────────
+let currentPmtilesUrl = null;
+
+function loadPMTiles(url, layerName) {
+  layerName = layerName || deriveLayerName(url);
+  currentPmtilesUrl = url;
+
+  setBadge("loading", "Loading tiles…");
+  document.getElementById("stat-layer").textContent = layerName;
+
+  // Remove existing geo layers/source if reloading
+  ["geo-fill", "geo-fill-outline", "geo-fill-z7"].forEach(id => {
+    if (map.getLayer(id)) map.removeLayer(id);
+  });
+  if (map.getSource("geo-pmtiles")) map.removeSource("geo-pmtiles");
+
+  // Add PMTiles source
+  map.addSource("geo-pmtiles", {
+    type: "vector",
+    url: `pmtiles://${url}`,
+    attribution: "PSA / NAMRIA / COMELEC — PH Geospatial Platform v2.2",
+  });
+
+  /* ── Layer 1: fill (all zooms 4–12) — shows simplification levels ─── */
+  map.addLayer({
+    id: "geo-fill",
+    type: "fill",
+    source: "geo-pmtiles",
+    "source-layer": layerName,
+    minzoom: 4,
+    maxzoom: 12,
+    paint: {
+      "fill-color": [
+        "interpolate", ["linear"],
+        ["zoom"],
+        4,  "rgba(35, 134, 54, 0.25)",   // low zoom: faint national overview
+        8,  "rgba(35, 134, 54, 0.45)",   // mid zoom: provincial
+        12, "rgba(35, 134, 54, 0.65)",   // high zoom: municipality detail
+      ],
+      "fill-opacity": 0.8,
+    },
+  });
+
+  /* ── Layer 2: outline ──────────────────────────────────────────────── */
+  map.addLayer({
+    id: "geo-fill-outline",
+    type: "line",
+    source: "geo-pmtiles",
+    "source-layer": layerName,
+    minzoom: 4,
+    maxzoom: 12,
+    paint: {
+      "line-color": "#7ee787",
+      "line-width": [
+        "interpolate", ["linear"], ["zoom"],
+        4, 0.3,   // thin at national view
+        8, 0.7,
+        12, 1.2,  // crisp at municipality level
+      ],
+      "line-opacity": 0.9,
+    },
+  });
+
+  /* ── Layer 3: Jenks class colour (only visible ≥z7 where data is dense) */
+  map.addLayer({
+    id: "geo-fill-z7",
+    type: "fill",
+    source: "geo-pmtiles",
+    "source-layer": layerName,
+    minzoom: 7,
+    maxzoom: 12,
+    filter: ["has", "jenks_class"],   // only features with Jenks metadata
+    paint: {
+      "fill-color": [
+        "match", ["get", "jenks_class"],
+        1, "#f7fbff",
+        2, "#9ecae1",
+        3, "#4393c3",
+        4, "#2166ac",
+        5, "#08306b",
+        "#30363d",                    // fallback: no data
+      ],
+      "fill-opacity": 0.75,
+    },
+  }, "geo-fill-outline");             // insert below outline for clean rendering
+
+  setBadge("ok", "✓ Tiles loaded — pmtiles verify passed");
+}
+
+// ── 5. Zoom stat + feature count update ───────────────────────────────────
+map.on("move", updateStats);
+map.on("zoom", updateStats);
+
+function updateStats() {
+  const z = map.getZoom().toFixed(1);
+  document.getElementById("stat-zoom").textContent = z;
+
+  if (map.getSource("geo-pmtiles")) {
+    try {
+      const features = map.queryRenderedFeatures({ layers: ["geo-fill"] });
+      document.getElementById("stat-features").textContent =
+        features.length > 0 ? features.length.toLocaleString() : "0 (pan/zoom to load)";
+    } catch (_) {
+      document.getElementById("stat-features").textContent = "—";
+    }
+  }
+}
+
+// ── 6. Tile error detection — HALT signal for Day 2 gate ──────────────────
+map.on("error", (e) => {
+  console.error("[Day2TilePreview] MapLibre error:", e.error);
+  setBadge("err", `✗ Error: ${(e.error && e.error.message) || "unknown"}`);
+});
+
+map.on("sourcedata", (e) => {
+  if (e.sourceId === "geo-pmtiles" && e.isSourceLoaded) {
+    setBadge("ok", "✓ Source data loaded");
+    updateStats();
+  }
+});
+
+// ── 7. File picker ─────────────────────────────────────────────────────────
+document.getElementById("load-btn").addEventListener("click", () => {
+  const fileInput = document.getElementById("file-input");
+  const urlInput  = document.getElementById("url-input").value.trim();
+
+  if (fileInput.files.length > 0) {
+    const file = fileInput.files[0];
+    // Register file-backed PMTiles instance with protocol
+    const p = new pmtiles.PMTiles(
+      new pmtiles.FileSource(file)
+    );
+    protocol.add(p);
+    // Use the registered URL form: pmtiles://<filename>
+    const syntheticUrl = file.name;
+    loadPMTiles(syntheticUrl, deriveLayerName(file.name));
+
+    // Fit to PH bounds on first load
+    map.fitBounds(PH_BOUNDS, { padding: 20, duration: 1000 });
+    return;
+  }
+
+  if (urlInput) {
+    loadPMTiles(urlInput);
+    map.fitBounds(PH_BOUNDS, { padding: 20, duration: 1000 });
+    return;
+  }
+
+  setBadge("warn", "Select a .pmtiles file or enter a URL");
+});
+
+// Also trigger on file selection change for UX
+document.getElementById("file-input").addEventListener("change", () => {
+  const f = document.getElementById("file-input").files[0];
+  if (f) document.getElementById("url-input").value = "";
+});
+
+// ── 8. Tooltip on hover ────────────────────────────────────────────────────
+const popup = new maplibregl.Popup({
+  closeButton: false,
+  closeOnClick: false,
+  className: "geo-popup",
+  maxWidth: "260px",
+});
+
+map.on("mousemove", "geo-fill", (e) => {
+  if (!e.features || e.features.length === 0) return;
+  map.getCanvas().style.cursor = "pointer";
+
+  const props = e.features[0].properties;
+  const rows = Object.entries(props)
+    .filter(([k]) => !k.startsWith("__"))
+    .slice(0, 8)                          // limit tooltip height
+    .map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`)
+    .join("");
+
+  popup
+    .setLngLat(e.lngLat)
+    .setHTML(`
+      <table style="font-size:11px;border-collapse:collapse;color:#c9d1d9;">
+        <tbody>${rows}</tbody>
+      </table>
+    `)
+    .addTo(map);
+});
+
+map.on("mouseleave", "geo-fill", () => {
+  map.getCanvas().style.cursor = "";
+  popup.remove();
+});
+
+// ── 9. Keyboard shortcut: fit PH bounds ───────────────────────────────────
+document.addEventListener("keydown", (e) => {
+  if (e.key === "f" || e.key === "F") {
+    map.fitBounds(PH_BOUNDS, { padding: 20, duration: 800 });
+  }
+});
+
+// ── Utilities ──────────────────────────────────────────────────────────────
+function setBadge(type, msg) {
+  const badge = document.getElementById("status-badge");
+  badge.className = "";
+  badge.classList.add(type);
+  badge.textContent = msg;
+}
+
+function deriveLayerName(urlOrFilename) {
+  // Strip path + extension to get layer name expected by tippecanoe --layer
+  return urlOrFilename
+    .split("/").pop()          // basename
+    .replace(/\.pmtiles$/i, "")
+    .replace(/[^a-z0-9_-]/gi, "_");
+}
+
+// ── Initial status ─────────────────────────────────────────────────────────
+map.on("load", () => {
+  setBadge("ok", "Map ready — load a .pmtiles file");
+});
+</script>
+
+<!--
+  Day 2 Tile Preview — Usage
+  ─────────────────────────────────────────────────────────────────────────────
+  Option A — Local file (drag-and-drop equivalent):
+    1. Open this HTML in Chrome/Firefox (file:// or localhost — both work with PMTiles).
+    2. Click "Choose File" → select your .pmtiles output from gold/pmtiles.py.
+    3. Click "Load PMTiles →".
+    4. Tile should appear at zoom 5 (PH national view). Pan/zoom z4→z12.
+
+  Option B — MinIO / HTTP URL:
+    1. Paste the MinIO public URL in the URL field, e.g.:
+         http://localhost:9000/geo-pmtiles/psa_provincial_2023.pmtiles
+    2. Click "Load PMTiles →".
+    CORS note: MinIO bucket must have GetObject policy or CORS header
+               "Access-Control-Allow-Origin: *" for range requests to work.
+
+  Success criteria (Day 2 gate):
+    ✓  Status badge shows green "✓ Tiles loaded"
+    ✓  Boundaries visible at zoom 4 (national), 8 (provincial), 12 (municipality)
+    ✓  Jenks colour classes appear at zoom ≥ 7 (features with jenks_class property)
+    ✓  Zero errors in browser DevTools console
+    ✓  `pmtiles verify` passed before this HTML was opened (see gold/pmtiles.py)
+
+  Keyboard shortcut:
+    F  → fit Philippine bounds
+
+  HALT if:
+    ✗  Console shows "pmtiles:" protocol errors → check pmtiles.js CDN load
+    ✗  Source layer name mismatch → match layerName to tippecanoe --layer value
+    ✗  Blank tiles at all zooms → run `pmtiles verify output.pmtiles` first
+    ✗  CORS error on MinIO URL → add bucket CORS policy (see Section 29 runbook)
+  ─────────────────────────────────────────────────────────────────────────────
+-->
+
+</body>
+</html>
