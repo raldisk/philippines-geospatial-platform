@@ -19,10 +19,6 @@ platform.
 H3 aggregation, vector tiles) so the serving layer is read-only, stateless, and trivially
 scalable. Pay latency cost once at Gold generation; amortize across all consumer requests.
 
-**Version:** v2.2  
-**Status:** BYOD Production Ready  
-**License:** MIT
-
 ---
 
 ## Table of Contents
