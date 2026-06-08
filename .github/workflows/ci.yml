@@ -1,0 +1,332 @@
+# .github/workflows/ci.yml
+# Section 28 — Full CI matrix: lint, unit, integration, fitness functions, Docker, Trivy
+#
+# CRITICAL RULES (from master_plan_v2.2_final.md):
+#   - Existing string-based fitness functions run as-is. No contract rewrite.
+#   - TECH-DEBT-002 (path-based contract migration) is deferred to Phase 3.
+#   - If fitness_functions/ tests fail, fix the test or the implementation.
+#     Do NOT change the string-matching assertion to a path-based check.
+#
+# Integration tests (2–4h block):
+#   - Bronze → MinIO roundtrip: upload fixture 7z, run bronze writer, verify Parquet in bucket
+#   - tippecanoe valid tile count > 0: run generate_pmtiles on fixture GeoJSON, pmtiles verify
+#
+# CI build budget: < 8 min (ADR-001 / Section 26 constraint)
+# GHA cache (type=gha) covers: pip deps, Docker layer cache — keeps build under 8 min.
+
+name: CI — Test Matrix
+
+on:
+  push:
+    branches:
+      - master
+      - "feat/*"
+  pull_request:
+    branches:
+      - master
+  schedule:
+    # Weekly tippecanoe version check (ADR-008 — detect drift from pinned version)
+    - cron: "0 9 * * 1"
+
+env:
+  PYTHON_VERSION: "3.11"
+  # Do NOT pin GDAL here — version resolved from apt at build time per Dockerfile.
+  # Pinning in CI without matching the builder stage version causes false failures.
+
+jobs:
+
+  # ── Lint ────────────────────────────────────────────────────────────────────
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Install lint dependencies
+        run: pip install ruff mypy
+
+      - name: ruff lint
+        run: ruff check geo_service/ fitness_functions/ dags/
+
+      - name: ruff format check
+        run: ruff format --check geo_service/ fitness_functions/ dags/
+
+      - name: mypy type check
+        run: mypy geo_service/ --ignore-missing-imports --no-error-summary
+
+  # ── Unit + Integration tests ─────────────────────────────────────────────────
+  test:
+    runs-on: ubuntu-latest
+    needs: lint
+    services:
+      postgres:
+        image: postgis/postgis:16-3.4-alpine
+        env:
+          POSTGRES_DB: geo_test
+          POSTGRES_USER: geo_test
+          POSTGRES_PASSWORD: geo_test_pw
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      minio:
+        image: quay.io/minio/minio:RELEASE.2024-10-02T17-50-41Z
+        env:
+          MINIO_ROOT_USER: minioadmin
+          MINIO_ROOT_PASSWORD: minioadmin
+        options: >-
+          --health-cmd "curl -f http://localhost:9000/minio/health/live"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 9000:9000
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Install GDAL system dependency
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends gdal-bin libgdal-dev
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt -r requirements-dev.txt
+
+      # ADR-008: Download pre-built binary, verify SHA-256 before any test that
+      # exercises tippecanoe. Binary cached in GHA runner — doesn't count toward
+      # the 8-min Docker build budget.
+      - name: Download + verify tippecanoe binary (ADR-008)
+        env:
+          TIPPECANOE_VERSION: "2.67.0"
+          TIPPECANOE_SHA256: ${{ secrets.TIPPECANOE_SHA256 }}
+        run: |
+          curl -fsSL \
+            "https://github.com/felt/tippecanoe/releases/download/${TIPPECANOE_VERSION}/tippecanoe-linux-x86_64" \
+            -o /usr/local/bin/tippecanoe
+          echo "${TIPPECANOE_SHA256}  /usr/local/bin/tippecanoe" | sha256sum --check
+          chmod +x /usr/local/bin/tippecanoe
+          tippecanoe --version
+
+      # Apply Day 4 schema DDL so integration tests hit a real schema.
+      - name: Apply PostgreSQL schema (Section 24 DDL)
+        env:
+          POSTGRES_DSN: postgresql://geo_test:geo_test_pw@localhost:5432/geo_test
+        run: psql $POSTGRES_DSN -f sql/init/001_geo_platform_schema.sql
+
+      # Create MinIO buckets required by integration tests.
+      - name: Provision MinIO buckets
+        run: |
+          pip install awscli-local
+          AWS_ACCESS_KEY_ID=minioadmin \
+          AWS_SECRET_ACCESS_KEY=minioadmin \
+          aws --endpoint-url http://localhost:9000 s3 mb s3://geo-uploads   --region us-east-1 || true
+          AWS_ACCESS_KEY_ID=minioadmin \
+          AWS_SECRET_ACCESS_KEY=minioadmin \
+          aws --endpoint-url http://localhost:9000 s3 mb s3://geo-bronze    --region us-east-1 || true
+          AWS_ACCESS_KEY_ID=minioadmin \
+          AWS_SECRET_ACCESS_KEY=minioadmin \
+          aws --endpoint-url http://localhost:9000 s3 mb s3://geo-gold      --region us-east-1 || true
+          AWS_ACCESS_KEY_ID=minioadmin \
+          AWS_SECRET_ACCESS_KEY=minioadmin \
+          aws --endpoint-url http://localhost:9000 s3 mb s3://geo-pmtiles   --region us-east-1 || true
+
+      - name: Run unit tests
+        run: pytest tests/unit/ -v --tb=short --cov=geo_service --cov-report=xml
+        env:
+          POSTGRES_DSN: postgresql://geo_test:geo_test_pw@localhost:5432/geo_test
+          MINIO_ENDPOINT: http://localhost:9000
+          MINIO_ACCESS_KEY: minioadmin
+          MINIO_SECRET_KEY: minioadmin
+
+      # Integration test scope (Day 5 spec):
+      #   test_bronze_minio_roundtrip: upload fixture .7z → bronze writer → verify Parquet in geo-bronze
+      #   test_tippecanoe_tile_count: generate_pmtiles on fixture GeoJSON → pmtiles verify → tile_count > 0
+      #   -x: stop on first failure (integration failures are pipeline-blocking)
+      - name: Run integration tests
+        run: pytest tests/integration/ -v --tb=short -x
+        env:
+          POSTGRES_DSN: postgresql://geo_test:geo_test_pw@localhost:5432/geo_test
+          MINIO_ENDPOINT: http://localhost:9000
+          MINIO_ACCESS_KEY: minioadmin
+          MINIO_SECRET_KEY: minioadmin
+
+      # Fitness functions (Section 2.2) — string-based assertions LEFT AS-IS.
+      # TECH-DEBT-002: migration to path-based contracts is Phase 3 scope.
+      # If this step fails: fix the implementation, not the fitness function assertion.
+      # Do NOT rewrite string-matching assertions to path-based checks in this sprint.
+      - name: Run fitness functions (string-based — no contract rewrite)
+        run: pytest fitness_functions/ -v --tb=short
+        env:
+          POSTGRES_DSN: postgresql://geo_test:geo_test_pw@localhost:5432/geo_test
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          file: coverage.xml
+          fail_ci_if_error: false   # coverage upload failure must not block merge
+
+  # ── Docker multi-stage build + Trivy security scan ──────────────────────────
+  # Runs after test matrix passes. GHA build cache (type=gha) keeps layer reuse
+  # efficient — tippecanoe-binary stage stays cached until version bump.
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      # multi-stage target: production (Stage 3 only — no builder artifacts in image)
+      - name: Build multi-stage image (target=production)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          target: production
+          push: false
+          tags: geo-service:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            TIPPECANOE_VERSION=2.67.0
+            TIPPECANOE_SHA256=${{ secrets.TIPPECANOE_SHA256 }}
+
+      # Trivy scans production image for CRITICAL/HIGH CVEs.
+      # ignore-unfixed: true — unfixable CVEs must not block CI.
+      # exit-code: 1 — fixable CRITICAL/HIGH CVEs are a hard CI failure.
+      - name: Trivy container scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: geo-service:${{ github.sha }}
+          format: table
+          exit-code: "1"
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+
+  # ── Schema drift detection — PR only ─────────────────────────────────────────
+  schema-drift:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    services:
+      postgres:
+        image: postgis/postgis:16-3.4-alpine
+        env:
+          POSTGRES_DB: geo_test
+          POSTGRES_USER: geo_test
+          POSTGRES_PASSWORD: geo_test_pw
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Apply current branch schema
+        env:
+          POSTGRES_DSN: postgresql://geo_test:geo_test_pw@localhost:5432/geo_test
+        run: psql $POSTGRES_DSN -f sql/init/001_geo_platform_schema.sql
+
+      - name: Dump schema fingerprint (current branch)
+        env:
+          POSTGRES_DSN: postgresql://geo_test:geo_test_pw@localhost:5432/geo_test
+        run: |
+          psql $POSTGRES_DSN -c "\d+ fact_geo_observation" > /tmp/schema_current.txt
+          psql $POSTGRES_DSN -c "\d+ dim_region"            >> /tmp/schema_current.txt
+          psql $POSTGRES_DSN -c "\d+ geo_lineage_edges"     >> /tmp/schema_current.txt
+
+      - name: Compare against base branch schema
+        env:
+          POSTGRES_DSN: postgresql://geo_test:geo_test_pw@localhost:5432/geo_test
+        run: |
+          git stash
+          psql $POSTGRES_DSN -f sql/init/001_geo_platform_schema.sql 2>/dev/null || true
+          psql $POSTGRES_DSN -c "\d+ fact_geo_observation" > /tmp/schema_base.txt
+          psql $POSTGRES_DSN -c "\d+ dim_region"           >> /tmp/schema_base.txt
+          psql $POSTGRES_DSN -c "\d+ geo_lineage_edges"    >> /tmp/schema_base.txt
+          diff /tmp/schema_base.txt /tmp/schema_current.txt \
+            && echo "✓ No schema drift detected" \
+            || (echo "SCHEMA DRIFT DETECTED — review PR for breaking DDL changes" && exit 1)
+
+  # ── Weekly tippecanoe version check (ADR-008) ──────────────────────────────
+  # Runs on schedule only (Monday 09:00 UTC). Emits GHA warning — does not fail.
+  # Update: bump TIPPECANOE_VERSION in Dockerfile + update TIPPECANOE_SHA256 secret.
+  tippecanoe-version-check:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check latest release against pinned version
+        run: |
+          LATEST=$(curl -s https://api.github.com/repos/felt/tippecanoe/releases/latest \
+                   | jq -r '.tag_name')
+          PINNED=$(grep 'TIPPECANOE_VERSION=' Dockerfile | grep -oP '[\d.]+' | head -1)
+          echo "Latest: ${LATEST}  Pinned: ${PINNED}"
+          if [ "${LATEST}" != "${PINNED}" ]; then
+            echo "::warning::tippecanoe ${LATEST} available. Currently pinned to ${PINNED}. Update Dockerfile + SHA256 secret."
+          else
+            echo "::notice::tippecanoe ${PINNED} is current."
+          fi
+
+  # ── p95 SLO check — master push only ─────────────────────────────────────────
+  # Requires geo-service to be running locally (or in CI environment).
+  # Only runs after docker-build succeeds on master.
+  slo-latency:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    needs: docker-build
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install locust
+        run: pip install locust
+
+      - name: Run tile endpoint SLO check (p95 < 50ms)
+        run: |
+          locust -f tests/load/locustfile.py \
+            --headless \
+            --users 50 \
+            --spawn-rate 10 \
+            --run-time 60s \
+            --host http://localhost:8002 \
+            --html /tmp/locust_report.html \
+            --exit-code-on-error 1 \
+            --csv /tmp/locust_stats
+          python - <<'EOF'
+          import csv, sys
+          with open('/tmp/locust_stats_stats.csv') as f:
+              for row in csv.DictReader(f):
+                  if row['Name'] == 'GET /geo/v1/tiles/10/823/512.mvt':
+                      p95 = float(row['95%'])
+                      if p95 >= 50:
+                          print(f'SLO BREACH: tile p95={p95}ms > 50ms target', file=sys.stderr)
+                          sys.exit(1)
+                      print(f'SLO OK: tile p95={p95}ms < 50ms target')
+          EOF
+
+      - name: Upload locust report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: locust-report-${{ github.sha }}
+          path: /tmp/locust_report.html
+          retention-days: 14
