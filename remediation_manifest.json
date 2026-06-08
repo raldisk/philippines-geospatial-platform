@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "sprint": "v2.2",
+  "stage": "4C",
+  "actions": [
+    {
+      "id": 1,
+      "title": "Fix docstring false-positive",
+      "file": "fitness_functions/test_string_contracts.py",
+      "change": "Rewrote docstring line 7: removed literal 'os.path.exists' — replaced with 'No filesystem path-existence assertions in this module.'",
+      "verification": "grep -q 'os.path.exists' fitness_functions/ -> exit 1",
+      "status": "PASS"
+    },
+    {
+      "id": 2,
+      "title": "Add request_id to logs",
+      "files": [
+        "geo_service/api/main.py",
+        "geo_service/infra/logging_config.py"
+      ],
+      "change": "Added request_id_middleware to FastAPI app: generates UUIDv4 per request, clears+binds to structlog contextvars, sets X-Request-ID response header. logging_config.py already had merge_contextvars in shared_processors — updated module docstring to document the contract.",
+      "verification": "request_id_middleware present in main.py; merge_contextvars in logging_config.py",
+      "status": "PASS"
+    },
+    {
+      "id": 3,
+      "title": "Add DuckDB retry/backoff",
+      "file": "geo_service/infra/duckdb_conn.py",
+      "change": "Extracted _connect_read_only() and _connect_write() helpers decorated with @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=1, max=10), reraise=True). Both read_conn() and write_conn() use these helpers. tenacity import added.",
+      "verification": "from tenacity import present; stop_after_attempt(3) present",
+      "status": "PASS"
+    },
+    {
+      "id": 4,
+      "title": "Add Prometheus /metrics endpoint",
+      "files": [
+        "geo_service/api/main.py",
+        "geo_service/infra/metrics.py"
+      ],
+      "change": "Created geo_service/infra/metrics.py with REQUEST_DURATION Histogram (http_request_duration_seconds, labelled method+endpoint) and metrics_app WSGIMiddleware. Mounted at /metrics in create_app(). REQUEST_DURATION.observe() called inside request_id_middleware with route path and duration.",
+      "verification": "http_request_duration_seconds in metrics.py; /metrics mount in main.py",
+      "status": "PASS"
+    },
+    {
+      "id": 5,
+      "title": "Write docs/ARCHITECTURE.md",
+      "file": "docs/ARCHITECTURE.md",
+      "change": "Created new file with three sections: (1) Ranked architectural characteristics table (availability > scalability > testability > deployability), (2) Coupling analysis table (8 dependency pairs with contract type), (3) ADR index ADR-001 through ADR-012 with one-line summaries.",
+      "verification": "All three section headers present",
+      "status": "PASS"
+    }
+  ],
+  "requirements_updated": ["tenacity>=8.2.0", "prometheus-client>=0.20.0"],
+  "namespace_violations": 0,
+  "halt_conditions_triggered": 0
+}

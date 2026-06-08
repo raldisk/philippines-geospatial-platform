@@ -1,0 +1,402 @@
+[
+  {
+    "path": "itignore",
+    "sha256": "7920a8d4b38ac8e9311d85c569b61bfd99093e35df3af3a1e569cde63821f556",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "ckerfile",
+    "sha256": "5f55745b78cf8cf1bfda944c7a2262a8d2e566b0a951f6a170501612972ff7f2",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "CENSE",
+    "sha256": "89c51f30f09a8573debfa218b002dcb5e80e757a2690d5bba63126bcad9ba39e",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "cker-compose.prod.yml",
+    "sha256": "b6a9fd66ef7bf770a160c2ae3a8dd594c16cf51be97874e640c6603d0ac17a44",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "custfile.py",
+    "sha256": "2ee4bfc92559bdec833816a7c1e986393b7a8af52d1f8197a4a845a15bddc349",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "project.toml",
+    "sha256": "1d19e33aec9e05eb87219b4e34aacd246cc97c6ee690ac520ed13e4d7f58841a",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "quirements.txt",
+    "sha256": "295d14cb71eeb19ca5d98f6773851646dd368f3d18ee176420e661485d43de18",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "ithub/workflows/ci.yml",
+    "sha256": "f5ecf4bfdbbfc00dbdd483ec9600e10455ddc50a012b4bc026327dbb4d609332",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "nfig/requirements/requirements.txt",
+    "sha256": "b1e624dcb95fdef3865a6245ab0fa83967332ba3fdf31f02dabaff983fbea07d",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "nfig/requirements/requirements_day1.txt",
+    "sha256": "79cf7dab3de1ac6ae5f51f9b4e2fbd3c431fbec78a10736f3b73add7c8c6ceba",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "nfig/requirements/requirements_day2.txt",
+    "sha256": "f9952ff90f623b2f7a090132d0c2bb72ace16ece8a750dd24a604fc6af1b903a",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "gs/geo_pipeline_daily.py",
+    "sha256": "81628342149cbef5ccd7784bebb154349a2e69aeb99cc94dc8545217821d37fe",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "ta/day1_profile_report.json",
+    "sha256": "b7237485d1a4c9ac473f96b73263f43c11141356b9b9326f3505e1c56e019fc6",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "ta/day1_profile_report.schema.json",
+    "sha256": "f86ff1781430a24e7ebfd019e53a5dc865ee2cf8c4a2587546deee55a6806272",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "ta/day4_choropleth_4k.png",
+    "sha256": "0e94b68d4820353fbb3ccdcacd5ba4ef4c6339aabedf3a1a9318f2b5a2f8cb1b",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "cs/README.md",
+    "sha256": "78d641aeab11efb3f67c6fd1a2d4b4583e2ec921cde91c9b7f00791f74a30f8f",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "cs/RUNBOOK.md",
+    "sha256": "bf308b234048c4888f188fb279618eefa9e89e15af422fa65cf885d76ddaf396",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "cs/day-1-README.md",
+    "sha256": "acff337bf72e19fa4367f5972a6ca16bd4eef8b26029c6115d08c3341d2793e7",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "cs/day-2-README.md",
+    "sha256": "05cc479db62fa2905ae2fbe2aa92f6d0a34398ef194ec9b8a69e9d785229268f",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "cs/day-3-README.md",
+    "sha256": "b4d07fe86f8f554ca03fb3296fe4e50563f9ccff74af613a8304d3a2a05666de",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "cs/day-4-README.md",
+    "sha256": "92628dc3a089773d7d4b4a06ae26169dee61605614be2bb037375cc20542ddd7",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "cs/day-5-README.md",
+    "sha256": "07da714e9993884a919847408c39b1065a6eee40250019d700e7080b16e0c644",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "cs/day-6-README.md",
+    "sha256": "9495e6eed285873ff15378e5ef0fe6144e7cdf86f98b3b8b220193bc85c1dce5",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "cs/reddit_posts.md",
+    "sha256": "1dd7cfc4b72cba7bf09c483720f852eaccc7ecf9416c0423463c613962d067c2",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "cs/screen_recording_guide.md",
+    "sha256": "74883a6cfbd7a2ec8d6afa737fc5efc103e6c85e7d7dc95b3ff33d4aef104348",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "tness_functions/__init__.py",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "tness_functions/test_string_contracts.py",
+    "sha256": "76ab8d427cf8474be88648fcc48b2c8371a1f6bb7ea65aa6e6e21988283648e0",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "o_service/__init__.py",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "o_service/config.py",
+    "sha256": "8edfc6eb024d9c2793410bb1cc66c7de18675701681b475cfa1074051082c435",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "o_service/api/__init__.py",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "o_service/api/main.py",
+    "sha256": "5d73b319079f6d57ef2685bdf8ed0b0190d8342c0ad180c988110ee0a143373f",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "o_service/api/middleware/__init__.py",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "o_service/api/middleware/validation.py",
+    "sha256": "fcf5c439bb2124dfb7654d357a6a893bd43122cb47cb8e16805cf9fceeee45bd",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "o_service/api/routes/__init__.py",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "o_service/api/routes/geojson.py",
+    "sha256": "fb5de0e2d1dce2c63a9a875abdb26a086b6e8f6df39c49a397a664518b56e26d",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "o_service/api/routes/h3.py",
+    "sha256": "c17a6ea0d2ad062f6338d836f8167ece2af63f872c97b287446bc19b65342b8f",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "o_service/api/routes/health.py",
+    "sha256": "d0404b5b79401acaac8345c13c065534fa3ee8a1718793dfc9d78675186278a1",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "o_service/api/routes/metadata.py",
+    "sha256": "d46475e44c660f86ebd1e36dc33f862e9126f99f9855911c44f0cb6f42637f2b",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "o_service/api/routes/tiles.py",
+    "sha256": "39916ee92e79173e6efb31a04d0cfa8aa288c7b1664aa513dd1a57386f0f6d48",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "o_service/domain/__init__.py",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "o_service/domain/exceptions.py",
+    "sha256": "83974c8c4a27e1865690448e0ba07ab49b687b3707c9827fa73e6be91e0925c9",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "o_service/infra/__init__.py",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "o_service/infra/cache.py",
+    "sha256": "9dfbda538aba71fe654b981eddb1e02f1a7785d625cd2df2f0a4df12724580bc",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "o_service/infra/duckdb_conn.py",
+    "sha256": "2f2d872b48d6ca00c0d8f73efd9e26231e6e1e42712815fca0a2894cea94f71c",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "o_service/infra/logging_config.py",
+    "sha256": "ca294fc331ef148d68e5067c912d8ea826654833bbe09c64f3d98b7de76bf413",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "o_service/infra/secrets.py",
+    "sha256": "182948e29a2eb26e95082d21e4abe4a1d6b9fbf5cc5e39fad086b87ba5e80ddc",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "o_service/pipeline/__init__.py",
+    "sha256": "98cee558e342514d6505c9c65706ec2612c26956474784a17e5f3a9907ae38c6",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "o_service/pipeline/deploy_gate.py",
+    "sha256": "a81880b7bbe6aa0f53a5beed17d3f501d443b6ab2c07c2aaa9d8a8eea37a9b15",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "o_service/pipeline/bronze/__init__.py",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "o_service/pipeline/bronze/writer.py",
+    "sha256": "08c04bfab96f9387585ea13bb2c0e0b24257e57aa3cd769d36ed7bf496342ceb",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "o_service/pipeline/extract/__init__.py",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "o_service/pipeline/extract/inspector.py",
+    "sha256": "b25d6f6c80c38dce0625df3aec197e419b8ae6f5d24fad987bfc8a7542ac19e8",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "o_service/pipeline/gold/__init__.py",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "o_service/pipeline/gold/h3_aggregate.py",
+    "sha256": "1a1ed51a9e935c33fef337cc120781e63d7b676b53d10c69a4fbd652922bf464",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "o_service/pipeline/gold/pmtiles.py",
+    "sha256": "37fee06b5d99151d9a6cc2af06f70913a517ba3f9d1f8f8753e05b89a8a1dd2a",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "o_service/pipeline/silver/__init__.py",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "o_service/pipeline/silver/parallel.py",
+    "sha256": "feb07b2163e16325c4a9d7323bfadfb2bc2b82ee1f9a9157d2ef3bdbe5a66cce",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "o_service/pipeline/silver/simplify.py",
+    "sha256": "6f4766ebfbf26e229b611aacd5a30b60f22e512483e90299a3b322a2eecf200c",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "nder/day4_choropleth_4k_render.py",
+    "sha256": "4a0d9958c0ab21c70b04cc0010b273bd8421c1cad41000c097dc9011eed03320",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "ripts/run_day1.py",
+    "sha256": "3c74a3a680973119bd19f95d355fe0b24a17e6251f51c2467faa8b46975120a2",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "ripts/run_day2.py",
+    "sha256": "4d1df7eda35cb14cecdf84106c16071c619fccb3feed1b408287d85370081bd1",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "ripts/validate_analytical.py",
+    "sha256": "67fb7fd2688f0aa86318819e9182232535623f69aea22d528146fa5b31ab5fe3",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "l/init/001_geo_platform_schema.sql",
+    "sha256": "072f0d257d8a6e96dcae942bdb085f2c02a14cb3fd353e7843176a519ad5b482",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "l/lineage/lineage_verification.sql",
+    "sha256": "b1df453dbdb810751bc3b2c1af0a3c5e9a410a437d55009d9d31abf15fce1c07",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "l/views/mart_geo_poverty_crosswalk.sql",
+    "sha256": "920cac1dda62d16050652da49978c3d16d777d1d81f7fcc6fc1ffe7edce728ea",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "atic/day2_tile_preview.html",
+    "sha256": "300fea354a99e910cb449948f1ea3f4fee72cea0819488311e8fa00fb31302f2",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "atic/deckgl_animation_config.js",
+    "sha256": "afb9177a29af7d2dc9786a96eaca56a07a0924bb9ccedc0ba66379e97b3cbcec",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "sts/__init__.py",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "sts/fixtures/__init__.py",
+    "sha256": "d4c07f8e4f1c03112b8fa86b14f6268cf378fc1a678dfe1972723d24b90b0cf9",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "sts/fixtures/ph_barangay_20row.parquet",
+    "sha256": "fbc62d3b511368ee275ddc74117d8689b430e1427220e25d30816201d89ca7b6",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "sts/fixtures/ph_h3_res6_15row.parquet",
+    "sha256": "fbc62d3b511368ee275ddc74117d8689b430e1427220e25d30816201d89ca7b6",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "sts/fixtures/ph_indicators_8row.parquet",
+    "sha256": "fbc62d3b511368ee275ddc74117d8689b430e1427220e25d30816201d89ca7b6",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "sts/fixtures/ph_municipal_10row.parquet",
+    "sha256": "fbc62d3b511368ee275ddc74117d8689b430e1427220e25d30816201d89ca7b6",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "sts/fixtures/ph_provincial_5row.parquet",
+    "sha256": "fbc62d3b511368ee275ddc74117d8689b430e1427220e25d30816201d89ca7b6",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "sts/integration/__init__.py",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "sts/integration/test_bronze_minio_roundtrip.py",
+    "sha256": "8c64c7d00ecace7e407921651a03d3b43f86b2008ef368641151eb71be3ab381",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "sts/integration/test_tippecanoe_tile_count.py",
+    "sha256": "56986b9deabffad5fb72947b992a4014ce18b2dbc8e65dfb32a88b9cbea20099",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "sts/unit/__init__.py",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "sts/unit/test_h3_aggregate.py",
+    "sha256": "c170bbb564f65f4b8e9318c966cee73d94c86a10bebf1abffe58401f5b1157cb",
+    "source": "Day 5-6 via merge"
+  },
+  {
+    "path": "sts/unit/test_pmtiles.py",
+    "sha256": "60554904174cb0681ccbbfac115e12a27d8c220af3606d2b6e527cdd3046d8b7",
+    "source": "Day 5-6 via merge"
+  }
+]
