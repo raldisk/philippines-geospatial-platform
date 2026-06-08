@@ -1,0 +1,217 @@
+# docker-compose.prod.yml — Production spec (Section 23.2, 23.3)
+# Rules:
+#   - Docker Secrets for all credentials; never plain env var values
+#   - geo-internal: bridge, internal=true (no internet egress from pipeline/storage)
+#   - geo-serving: bridge, internet-accessible (tile + API serving only)
+#   - Non-root container user: geoservice:1001
+#   - Martin memory cap: 512 MB (Section 19 FMEA mitigation)
+#
+# Validation: docker-compose -f docker-compose.prod.yml config
+
+version: "3.9"
+
+# =============================================================
+# SECRETS (Docker Secrets — files at /run/secrets/ in container)
+# =============================================================
+secrets:
+  postgres_dsn:
+    file: ./secrets/postgres_dsn.txt       # chmod 400, owned by root
+  minio_access_key:
+    file: ./secrets/minio_access_key.txt
+  minio_secret_key:
+    file: ./secrets/minio_secret_key.txt
+
+# =============================================================
+# NETWORKS
+# =============================================================
+networks:
+  # Pipeline + storage: no outbound internet (internal: true)
+  geo-internal:
+    driver: bridge
+    internal: true
+
+  # Serving: geo-service and Martin exposed to consumers
+  geo-serving:
+    driver: bridge
+
+  # Pre-existing EconIntel shared network (ASOF JOIN enrichment edge)
+  econintel-internal:
+    external: true
+    name: econintel_econintel-internal
+
+# =============================================================
+# VOLUMES
+# =============================================================
+volumes:
+  geo-data:          # GeoParquet Gold layer + DuckDB file
+  minio-data:        # MinIO object store
+  postgres-data:     # PostgreSQL audit + schema registry
+
+# =============================================================
+# SERVICES
+# =============================================================
+services:
+
+  # -----------------------------------------------------------
+  # geo-service — FastAPI /geo/v1
+  # -----------------------------------------------------------
+  geo-service:
+    image: geo-service:${GEO_SERVICE_VERSION:-latest}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    user: "geoservice:1001"
+    read_only: true
+    tmpfs:
+      - /tmp:size=256m,mode=1777
+    secrets:
+      - postgres_dsn
+      - minio_access_key
+      - minio_secret_key
+    environment:
+      # Secret FILE paths — code reads files, never env var values directly
+      POSTGRES_DSN_FILE:      /run/secrets/postgres_dsn
+      MINIO_ACCESS_KEY_FILE:  /run/secrets/minio_access_key
+      MINIO_SECRET_KEY_FILE:  /run/secrets/minio_secret_key
+      # Non-secret config
+      DUCKDB_PATH:            /data/geo_platform.duckdb
+      MARTIN_BASE_URL:        http://martin:3002
+      LOG_LEVEL:              INFO
+      PYTHONUNBUFFERED:       "1"
+    volumes:
+      - geo-data:/data:ro    # read-only: serving layer never writes Gold
+    ports:
+      - "8002:8002"
+    networks:
+      - geo-serving
+      - geo-internal
+      - econintel-internal
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      martin:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health/live"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+          cpus: "2"
+    restart: unless-stopped
+
+  # -----------------------------------------------------------
+  # Martin — vector tile server
+  # -----------------------------------------------------------
+  martin:
+    image: ghcr.io/maplibre/martin:latest
+    user: "1001:1001"
+    command:
+      - "--memory-cache-size=512"          # FMEA mitigation (Section 19)
+      - "--listen-addresses=0.0.0.0:3002"
+      - "/tiles"
+    volumes:
+      - geo-data:/tiles:ro
+    networks:
+      - geo-serving
+      - geo-internal
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+    restart: unless-stopped
+
+  # -----------------------------------------------------------
+  # MinIO — S3-compatible object store (Bronze/Silver/Gold)
+  # -----------------------------------------------------------
+  minio:
+    image: minio/minio:RELEASE.2024-01-01T00-00-00Z
+    user: "1001:1001"
+    command: server /data --console-address ":9001"
+    secrets:
+      - minio_access_key
+      - minio_secret_key
+    environment:
+      MINIO_ROOT_USER_FILE:     /run/secrets/minio_access_key
+      MINIO_ROOT_PASSWORD_FILE: /run/secrets/minio_secret_key
+    volumes:
+      - minio-data:/data
+    networks:
+      - geo-internal           # storage: pipeline only, no serving exposure
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+    restart: unless-stopped
+
+  # -----------------------------------------------------------
+  # PostgreSQL — audit log, schema registry, PSGC crosswalk
+  # -----------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    user: "postgres"
+    secrets:
+      - postgres_dsn
+    environment:
+      # pg reads password from POSTGRES_PASSWORD_FILE (Docker Secrets pattern)
+      POSTGRES_DB:            geo_platform
+      POSTGRES_USER:          geo_pipeline_role
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_dsn
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./sql/init:/docker-entrypoint-initdb.d:ro   # DDL from Section 24
+    networks:
+      - geo-internal
+      - econintel-internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U geo_pipeline_role -d geo_platform"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+    restart: unless-stopped
+
+  # -----------------------------------------------------------
+  # Airflow — pipeline orchestration (Day 5)
+  # Included here so docker-compose config validates full stack.
+  # Not started by default until Day 5.
+  # -----------------------------------------------------------
+  airflow:
+    image: apache/airflow:2.8-python3.11
+    user: "airflow:50000"
+    profiles:
+      - airflow                 # opt-in: docker-compose --profile airflow up
+    secrets:
+      - postgres_dsn
+      - minio_access_key
+      - minio_secret_key
+    environment:
+      AIRFLOW__CORE__EXECUTOR:           LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN_SECRET: /run/secrets/postgres_dsn
+      AIRFLOW__CORE__LOAD_EXAMPLES:      "false"
+      MINIO_ACCESS_KEY_FILE:             /run/secrets/minio_access_key
+      MINIO_SECRET_KEY_FILE:             /run/secrets/minio_secret_key
+    volumes:
+      - ./dags:/opt/airflow/dags:ro
+      - geo-data:/data
+    networks:
+      - geo-internal
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
