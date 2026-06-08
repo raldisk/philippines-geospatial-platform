@@ -1,0 +1,217 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 520" width="1400" height="520">
+  <defs>
+    <linearGradient id="srcGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#e3f2fd"/><stop offset="100%" stop-color="#bbdefb"/></linearGradient>
+    <linearGradient id="ingGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff3e0"/><stop offset="100%" stop-color="#ffe0b2"/></linearGradient>
+    <linearGradient id="pipeGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#e8f5e9"/><stop offset="100%" stop-color="#c8e6c9"/></linearGradient>
+    <linearGradient id="storeGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f5f5f5"/><stop offset="100%" stop-color="#e0e0e0"/></linearGradient>
+    <linearGradient id="serveGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f3e5f5"/><stop offset="100%" stop-color="#e1bee7"/></linearGradient>
+    <linearGradient id="consGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffebee"/><stop offset="100%" stop-color="#ffcdd2"/></linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#546e7a"/>
+    </marker>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1400" height="520" fill="#fafafa"/>
+
+  <!-- Layer labels -->
+  <text x="70" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="600" fill="#455a64" text-anchor="middle">DATA SOURCES</text>
+  <text x="270" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="600" fill="#455a64" text-anchor="middle">INGESTION</text>
+  <text x="520" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="600" fill="#455a64" text-anchor="middle">PIPELINE</text>
+  <text x="850" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="600" fill="#455a64" text-anchor="middle">STORAGE</text>
+  <text x="1130" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="600" fill="#455a64" text-anchor="middle">SERVING</text>
+  <text x="1300" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="600" fill="#455a64" text-anchor="middle">CONSUMERS</text>
+
+  <!-- Vertical separators -->
+  <line x1="160" y1="40" x2="160" y2="500" stroke="#cfd8dc" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="380" y1="40" x2="380" y2="500" stroke="#cfd8dc" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="720" y1="40" x2="720" y2="500" stroke="#cfd8dc" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="1040" y1="40" x2="1040" y2="500" stroke="#cfd8dc" stroke-width="1" stroke-dasharray="4,4"/>
+  <line x1="1240" y1="40" x2="1240" y2="500" stroke="#cfd8dc" stroke-width="1" stroke-dasharray="4,4"/>
+
+  <!-- ===== DATA SOURCES ===== -->
+  <g filter="url(#shadow)">
+    <rect x="20" y="60" width="120" height="50" rx="6" fill="url(#srcGrad)" stroke="#90caf9" stroke-width="1.5"/>
+    <text x="80" y="82" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#1565c0" text-anchor="middle">PSA.gov.ph</text>
+    <text x="80" y="98" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" fill="#1565c0" text-anchor="middle">Census / FIES / .shp</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="20" y="120" width="120" height="50" rx="6" fill="url(#srcGrad)" stroke="#90caf9" stroke-width="1.5"/>
+    <text x="80" y="142" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#1565c0" text-anchor="middle">NAMRIA</text>
+    <text x="80" y="158" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" fill="#1565c0" text-anchor="middle">7z Shapefile Archives</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="20" y="180" width="120" height="50" rx="6" fill="url(#srcGrad)" stroke="#90caf9" stroke-width="1.5"/>
+    <text x="80" y="202" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#1565c0" text-anchor="middle">COMELEC</text>
+    <text x="80" y="218" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" fill="#1565c0" text-anchor="middle">Boundary Shapefiles</text>
+  </g>
+
+  <!-- ===== INGESTION ===== -->
+  <g filter="url(#shadow)">
+    <rect x="180" y="60" width="180" height="50" rx="6" fill="url(#ingGrad)" stroke="#ffb74d" stroke-width="1.5"/>
+    <text x="270" y="82" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#e65100" text-anchor="middle">MinIO S3A — geo-uploads</text>
+    <text x="270" y="98" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" fill="#e65100" text-anchor="middle">uploads/*.7z  ·  SHA-256 dedup</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="180" y="120" width="180" height="50" rx="6" fill="url(#ingGrad)" stroke="#ffb74d" stroke-width="1.5"/>
+    <text x="270" y="142" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#e65100" text-anchor="middle">Airflow MinioSensor</text>
+    <text x="270" y="158" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" fill="#e65100" text-anchor="middle">60s poke  ·  14min timeout</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="180" y="180" width="180" height="50" rx="6" fill="url(#ingGrad)" stroke="#ffb74d" stroke-width="1.5"/>
+    <text x="270" y="202" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#e65100" text-anchor="middle">ArcGIS REST Adapter</text>
+    <text x="270" y="218" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" fill="#e65100" text-anchor="middle">Fallback  ·  empty-schema Parquet</text>
+  </g>
+
+  <!-- ===== PIPELINE ===== -->
+  <!-- Inspect -->
+  <g filter="url(#shadow)">
+    <rect x="400" y="60" width="140" height="50" rx="6" fill="url(#pipeGrad)" stroke="#81c784" stroke-width="1.5"/>
+    <text x="470" y="82" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#2e7d32" text-anchor="middle">1. Inspect</text>
+    <text x="470" y="98" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" fill="#2e7d32" text-anchor="middle">profile_shapefile()</text>
+  </g>
+  <!-- Branch -->
+  <g filter="url(#shadow)">
+    <polygon points="470,130 510,150 470,170 430,150" fill="#fff" stroke="#78909c" stroke-width="1.5"/>
+    <text x="470" y="154" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" font-weight="600" fill="#37474f" text-anchor="middle">Branch</text>
+  </g>
+  <!-- Bronze -->
+  <g filter="url(#shadow)">
+    <rect x="400" y="190" width="140" height="50" rx="6" fill="url(#pipeGrad)" stroke="#81c784" stroke-width="1.5"/>
+    <text x="470" y="212" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#2e7d32" text-anchor="middle">2. Bronze</text>
+    <text x="470" y="228" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" fill="#2e7d32" text-anchor="middle">Immutable GeoParquet</text>
+  </g>
+  <!-- Silver (ephemeral) -->
+  <g filter="url(#shadow)">
+    <rect x="400" y="260" width="140" height="70" rx="6" fill="#fff8e1" stroke="#ff8f00" stroke-width="2" stroke-dasharray="6,3"/>
+    <text x="470" y="282" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#e65100" text-anchor="middle">3. Silver (Ephemeral)</text>
+    <text x="470" y="298" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" fill="#e65100" text-anchor="middle">CRS → make_valid → simplify</text>
+    <text x="470" y="314" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="8" fill="#e65100" text-anchor="middle">ProcessPoolExecutor · 4 workers</text>
+  </g>
+  <!-- Gold -->
+  <g filter="url(#shadow)">
+    <rect x="400" y="350" width="140" height="70" rx="6" fill="url(#pipeGrad)" stroke="#81c784" stroke-width="1.5"/>
+    <text x="470" y="372" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#2e7d32" text-anchor="middle">4. Gold</text>
+    <text x="470" y="388" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" fill="#2e7d32" text-anchor="middle">H3 + Jenks + Kimball ETL</text>
+    <text x="470" y="404" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="8" fill="#2e7d32" text-anchor="middle">tippecanoe PMTiles · 4K PNG</text>
+  </g>
+  <!-- Deploy Gate -->
+  <g filter="url(#shadow)">
+    <rect x="400" y="440" width="140" height="40" rx="6" fill="#37474f" stroke="#263238" stroke-width="1.5"/>
+    <text x="470" y="458" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#fff" text-anchor="middle">46-Check Deploy Gate</text>
+    <text x="470" y="472" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="8" fill="#b0bec5" text-anchor="middle">Silver cleanup on pass</text>
+  </g>
+
+  <!-- ===== STORAGE ===== -->
+  <!-- MinIO -->
+  <g filter="url(#shadow)">
+    <rect x="740" y="60" width="140" height="50" rx="6" fill="url(#storeGrad)" stroke="#bdbdbd" stroke-width="1.5"/>
+    <text x="810" y="78" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#424242" text-anchor="middle">MinIO S3A</text>
+    <text x="810" y="92" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" fill="#424242" text-anchor="middle">bronze/  ·  gold/</text>
+    <text x="810" y="104" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" fill="#424242" text-anchor="middle">pmtiles/  ·  quarantine/</text>
+  </g>
+  <!-- PostgreSQL -->
+  <g filter="url(#shadow)">
+    <rect x="740" y="130" width="140" height="110" rx="6" fill="url(#storeGrad)" stroke="#bdbdbd" stroke-width="1.5"/>
+    <text x="810" y="148" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#424242" text-anchor="middle">PostgreSQL 16 + PostGIS</text>
+    <text x="810" y="164" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" fill="#424242" text-anchor="middle">dim_region (SCD Type 2)</text>
+    <text x="810" y="178" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" fill="#424242" text-anchor="middle">fact_geo_observation</text>
+    <text x="810" y="192" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" fill="#424242" text-anchor="middle">fact_geo_h3_aggregate</text>
+    <text x="810" y="206" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" fill="#424242" text-anchor="middle">geo_ingest_registry</text>
+    <text x="810" y="220" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" fill="#424242" text-anchor="middle">geo_lineage_edges</text>
+    <text x="810" y="234" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" fill="#424242" text-anchor="middle">RLS: pipeline / readonly</text>
+  </g>
+  <!-- DuckDB -->
+  <g filter="url(#shadow)">
+    <rect x="740" y="260" width="140" height="70" rx="6" fill="url(#storeGrad)" stroke="#bdbdbd" stroke-width="1.5"/>
+    <text x="810" y="282" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#424242" text-anchor="middle">DuckDB Spatial</text>
+    <text x="810" y="298" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" fill="#424242" text-anchor="middle">ASOF JOIN views</text>
+    <text x="810" y="314" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" fill="#424242" text-anchor="middle">Per-thread read · Lock write</text>
+  </g>
+
+  <!-- ===== SERVING ===== -->
+  <g filter="url(#shadow)">
+    <rect x="1060" y="60" width="160" height="70" rx="6" fill="url(#serveGrad)" stroke="#ce93d8" stroke-width="1.5"/>
+    <text x="1140" y="82" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#6a1b9a" text-anchor="middle">geo-service :8002</text>
+    <text x="1140" y="98" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" fill="#6a1b9a" text-anchor="middle">FastAPI + uvicorn · 4 workers</text>
+    <text x="1140" y="114" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" fill="#6a1b9a" text-anchor="middle">TTL cache → DuckDB on miss</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="1060" y="150" width="160" height="50" rx="6" fill="url(#serveGrad)" stroke="#ce93d8" stroke-width="1.5"/>
+    <text x="1140" y="172" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#6a1b9a" text-anchor="middle">Martin :3002</text>
+    <text x="1140" y="188" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" fill="#6a1b9a" text-anchor="middle">PMTiles HTTP range proxy</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="1060" y="220" width="160" height="50" rx="6" fill="url(#serveGrad)" stroke="#ce93d8" stroke-width="1.5"/>
+    <text x="1140" y="242" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#6a1b9a" text-anchor="middle">Rate Limiting</text>
+    <text x="1140" y="258" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" fill="#6a1b9a" text-anchor="middle">Tiles 500/min · H3 100/min</text>
+  </g>
+
+  <!-- ===== CONSUMERS ===== -->
+  <g filter="url(#shadow)">
+    <rect x="1260" y="60" width="120" height="50" rx="6" fill="url(#consGrad)" stroke="#ef9a9a" stroke-width="1.5"/>
+    <text x="1320" y="82" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#c62828" text-anchor="middle">MapLibre GL</text>
+    <text x="1320" y="98" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" fill="#c62828" text-anchor="middle">Vector tiles</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="1260" y="120" width="120" height="50" rx="6" fill="url(#consGrad)" stroke="#ef9a9a" stroke-width="1.5"/>
+    <text x="1320" y="142" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#c62828" text-anchor="middle">Deck.gl</text>
+    <text x="1320" y="158" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" fill="#c62828" text-anchor="middle">H3 HexagonLayer</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="1260" y="180" width="120" height="50" rx="6" fill="url(#consGrad)" stroke="#ef9a9a" stroke-width="1.5"/>
+    <text x="1320" y="202" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#c62828" text-anchor="middle">EconIntel Dashboard</text>
+    <text x="1320" y="218" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" fill="#c62828" text-anchor="middle">Optional enrichment edge</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="1260" y="240" width="120" height="50" rx="6" fill="url(#consGrad)" stroke="#ef9a9a" stroke-width="1.5"/>
+    <text x="1320" y="262" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#c62828" text-anchor="middle">4K PNG / Animation</text>
+    <text x="1320" y="278" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" fill="#c62828" text-anchor="middle">Pipeline artifacts</text>
+  </g>
+
+  <!-- ===== ARROWS ===== -->
+  <!-- Sources to MinIO -->
+  <line x1="140" y1="85" x2="180" y2="85" stroke="#546e7a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="140" y1="145" x2="180" y2="85" stroke="#546e7a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="140" y1="205" x2="180" y2="85" stroke="#546e7a" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Ingestion to Pipeline -->
+  <line x1="360" y1="85" x2="400" y2="85" stroke="#546e7a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="360" y1="145" x2="400" y2="85" stroke="#546e7a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="360" y1="205" x2="400" y2="85" stroke="#546e7a" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrow)"/>
+
+  <!-- Pipeline internal -->
+  <line x1="470" y1="110" x2="470" y2="130" stroke="#546e7a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="470" y1="170" x2="470" y2="190" stroke="#546e7a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="470" y1="240" x2="470" y2="260" stroke="#546e7a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="470" y1="330" x2="470" y2="350" stroke="#546e7a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="470" y1="420" x2="470" y2="440" stroke="#546e7a" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Pipeline to Storage -->
+  <line x1="540" y1="215" x2="740" y2="85" stroke="#546e7a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="540" y1="295" x2="740" y2="85" stroke="#546e7a" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrow)"/>
+  <line x1="540" y1="385" x2="740" y2="85" stroke="#546e7a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="540" y1="385" x2="740" y2="185" stroke="#546e7a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="540" y1="385" x2="740" y2="295" stroke="#546e7a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="540" y1="460" x2="740" y2="85" stroke="#546e7a" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrow)"/>
+
+  <!-- Storage to Serving -->
+  <line x1="880" y1="85" x2="1060" y2="95" stroke="#546e7a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="880" y1="185" x2="1060" y2="95" stroke="#546e7a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="880" y1="295" x2="1060" y2="95" stroke="#546e7a" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Serving to Consumers -->
+  <line x1="1220" y1="85" x2="1260" y2="85" stroke="#546e7a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="1220" y1="95" x2="1260" y2="145" stroke="#546e7a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="1220" y1="105" x2="1260" y2="205" stroke="#546e7a" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="540" y1="385" x2="1260" y2="265" stroke="#546e7a" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrow)"/>
+
+  <!-- Legend -->
+  <rect x="20" y="480" width="1360" height="30" rx="4" fill="#fff" stroke="#e0e0e0" stroke-width="1"/>
+  <text x="30" y="498" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" fill="#78909c">
+    <tspan font-weight="600">Key:</tspan>  Solid arrow = data flow  ·  Dashed arrow = fallback / artifact  ·  Dashed border = ephemeral layer (deleted after verification)  ·  Orange border = ADR-011 Silver ephemeral compute stage
+  </text>
+</svg>
